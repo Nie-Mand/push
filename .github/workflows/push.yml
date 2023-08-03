@@ -18,9 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate to the registry
-        run: |
-          docker login -u ${{ inputs.docker-username }} -p ${{ secrets.docker-password }} ${{ inputs.docker-registry }}
-          echo "Authenticated to the registry"
+        uses: docker/login-action@v2
+        with:
+          username: ${{ inputs.docker-username }}
+          password: ${{ secrets.docker-password }}
+          registry: ${{ inputs.docker-registry }}
 
       - name: Build the docker image
         run: |
