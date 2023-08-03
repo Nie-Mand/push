@@ -1,0 +1,1 @@
+just a simple github action to push a docker image to docker hub

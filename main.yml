@@ -1,0 +1,30 @@
+name: Push to Docker Registry
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        required: true
+        type: string
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+      DOCKER_REGISTRY:
+        required: true
+
+jobs:
+  main-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v2
+
+      - name: Authenticate to the registry
+        run: echo "Authenticate to the registry"
+
+      - name: Build the docker image
+        run: echo "Build the docker image"
+
+      - name: Push the docker image
+        run: echo "Push the docker image"
