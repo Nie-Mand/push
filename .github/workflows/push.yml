@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Authenticate to the registry
         run: |
-          echo ${{ inputs.docker-password }} | docker login -u ${{ inputs.docker-username }} --password-stdin ${{ inputs.docker-registry }}
+          docker login -u ${{ inputs.docker-username }} -p ${{ secrets.docker-password }} ${{ inputs.docker-registry }}
           echo "Authenticated to the registry"
 
       - name: Build the docker image
