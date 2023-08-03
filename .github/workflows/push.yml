@@ -12,21 +12,33 @@ on:
         required: true
         type: string
       docker-registry:
-        required: true
         type: string
-
+        
 jobs:
   main-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Get the code
-        uses: actions/checkout@v2
-
       - name: Authenticate to the registry
-        run: echo "Authenticate to the registry"
+        run: |
+          echo ${{ inputs.docker-password }} | docker login -u ${{ inputs.docker-username }} --password-stdin ${{ inputs.docker-registry }}
+          echo "Authenticated to the registry"
 
       - name: Build the docker image
-        run: echo "Build the docker image"
+        run: |
+          if [ -z "${{ inputs.docker-registry }}" ]; then
+            docker build -t ${{ inputs.image-name }} .
+          fi
+          if [ -n "${{ inputs.docker-registry }}" ]; then
+            docker build -t ${{ inputs.docker-registry }}/${{ inputs.image-name }} .
+          fi
+          echo "Built the docker image"
 
       - name: Push the docker image
-        run: echo "Push the docker image"
+        run: |
+          if [ -z "${{ inputs.docker-registry }}" ]; then
+            docker push ${{ inputs.image-name }}
+          fi
+          if [ -n "${{ inputs.docker-registry }}" ]; then
+            docker push ${{ inputs.docker-registry }}/${{ inputs.image-name }}
+          fi
+          echo "Pushed the docker image"
