@@ -5,13 +5,15 @@ on:
       image-name:
         required: true
         type: string
-    secrets:
-      DOCKER_USERNAME:
+      docker-username:
         required: true
-      DOCKER_PASSWORD:
+        type: string
+      docker-password:
         required: true
-      DOCKER_REGISTRY:
+        type: string
+      docker-registry:
         required: true
+        type: string
 
 jobs:
   main-job:
