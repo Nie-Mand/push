@@ -26,36 +26,22 @@ jobs:
           password: ${{ secrets.docker-password }}
           registry: ${{ inputs.docker-registry }}
 
-      - name: Build the docker image (no path specified and no docker-registry specified)
-        if: ${{ !inputs.path && !inputs.docker-registry }}
+      - name: Build the docker image
         run: |
-          docker build -t ${{ inputs.image-name }} .
+          if [ -z "${{ inputs.docker-registry }}" ]; then
+            docker build -t ${{ inputs.image-name }} .
+          fi
+          if [ -n "${{ inputs.docker-registry }}" ]; then
+            docker build -t ${{ inputs.docker-registry }}/${{ inputs.image-name }} .
+          fi
           echo "Built the docker image"
 
-      - name: Build the docker image (no path specified and docker-registry specified)
-        if: ${{ !inputs.path && inputs.docker-registry }}
+      - name: Push the docker image
         run: |
-          docker build -t ${{ inputs.docker-registry }}/${{ inputs.image-name }} .
-          echo "Built the docker image"
-
-      - name: Build the docker image (path specified and no docker-registry specified)
-        if: ${{ inputs.path && !inputs.docker-registry }}
-        run: |
-          docker build -t ${{ inputs.image-name }} ${{ inputs.path }}
-          echo "Built the docker image"
-
-      - name: Build the docker image (path specified and docker-registry specified)
-        if: ${{ inputs.path && inputs.docker-registry }}
-        run: |
-          docker build -t ${{ inputs.docker-registry }}/${{ inputs.image-name }} ${{ inputs.path }}
-          echo "Built the docker image"
-
-      # - name: Push the docker image
-      #   run: |
-      #     if [ -z "${{ inputs.docker-registry }}" ]; then
-      #       docker push ${{ inputs.image-name }}
-      #     fi
-      #     if [ -n "${{ inputs.docker-registry }}" ]; then
-      #       docker push ${{ inputs.docker-registry }}/${{ inputs.image-name }}
-      #     fi
-      #     echo "Pushed the docker image"
+          if [ -z "${{ inputs.docker-registry }}" ]; then
+            docker push ${{ inputs.image-name }}
+          fi
+          if [ -n "${{ inputs.docker-registry }}" ]; then
+            docker push ${{ inputs.docker-registry }}/${{ inputs.image-name }}
+          fi
+          echo "Pushed the docker image"
